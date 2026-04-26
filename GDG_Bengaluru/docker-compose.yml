@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./Backend
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    env_file:
+      - ./Backend/.env
+    restart: always
+
+  frontend:
+    build:
+      context: ./Frontend
+      args:
+         # To connect frontend to a hosted backend in production, run:
+         # REACT_APP_API_BASE_URL=https://your-api.com docker-compose up --build -d
+         - REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL:-http://localhost:8000}
+    ports:
+      - "3000:3000"
+    restart: always
+    depends_on:
+      - backend
